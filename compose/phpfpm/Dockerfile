@@ -1,17 +1,19 @@
 FROM php:7.2-fpm
 
+MAINTAINER smallnews <1371606921@qq.com>
+
 COPY ./sources.list.stretch /etc/apt/sources.list
 
-# 增加 apt-get 界面参数设置
+# add apt-get frontend settings
 ENV DEBIAN_FRONTEND noninteractive
 
-# 设置时区
+# set timezone
 RUN /usr/bin/apt-get install tzdata
 RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
     && echo 'Asia/Shanghai' > /etc/timezone
 
 
-# 通过 apt 安装一些可能会需要的包
+# apt-get install some packages
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         cron \
@@ -27,7 +29,7 @@ RUN apt-get update \
     && apt-get autoremove
 
 
-# 通过 docker-php-ext-install 安装 php 必要的扩展
+# docker-php-ext-install install php extension
 RUN apt-get update \
     && apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
@@ -65,16 +67,15 @@ RUN apt-get update \
     && pecl install mcrypt-1.0.1 \
     && docker-php-ext-enable mcrypt
 
-# 安装 composer
+# install composer
 RUN curl -sS https://getcomposer.org/installer | php \
     && mv composer.phar /usr/local/bin/composer \
     && composer self-update --clean-backups \
     && composer config -g repo.packagist composer https://packagist.phpcomposer.com
 
-COPY ./docker-entrypoint.sh /usr/local/bin/
-
+# COPY ./docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+# ENTRYPOINT ["docker-entrypoint.sh"]
 
-CMD ["php-fpm"]
+# CMD ["phpfpm"]
