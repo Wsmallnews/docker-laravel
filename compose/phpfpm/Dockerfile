@@ -73,9 +73,9 @@ RUN curl -sS https://getcomposer.org/installer | php \
     && composer self-update --clean-backups \
     && composer config -g repo.packagist composer https://packagist.phpcomposer.com
 
-# COPY ./docker-entrypoint.sh /usr/local/bin/
+COPY ./docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# ENTRYPOINT ["docker-entrypoint.sh"]
+ENTRYPOINT ["docker-entrypoint.sh"]
 
-# CMD ["phpfpm"]
+CMD ["phpfpm"]
